@@ -39,6 +39,22 @@ class Player():
         self.select_card = False
         self.win = False
 
+
+## Card Class
+
+class Card():
+    def __init__(self, x,y, name, mechanic, laugh_damage):
+        self.name = name
+        self.mechanic = mechanic
+        self.laugh_damage = laugh_damage
+        card_img = pygame.image.load(f'Assets/Cards/{self.name}.jpg').convert_alpha()
+        self.image = pygame.transform.scale(card_img, (card_img.get_width()/3, card_img.get_height()/3))
+        self.rect = self.image.get_rect()
+        self.rect.center = (x,y)
+
+    def draw(self):
+        screen.blit(self.image,self.rect)
+
 ##Boss Class
 class Boss():
     def __init__(self, x,y, name, hp):
@@ -57,6 +73,7 @@ class Boss():
 ## Loading example Boss fight
 Pringles = Boss(height/2, width/2.2, 'pringles', 200 )
 
+## Loading cards
 
 
 while True:
@@ -68,6 +85,13 @@ while True:
 
     ## Draw entities
     Pringles.draw()
+
+    ## initializing and displaying 5 cards
+    x=64
+    for i in range(5):
+        King = Card(x, height - bottom_menu + 25, 'king', 'Damage', 20)
+        King.draw()
+        x=x+64
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
