@@ -92,10 +92,21 @@ class Boss():
         self.laugh_meter = 0
         self.hp    = hp
         self.alive = True
-        boss_image = pygame.image.load(f'Assets/Sprites/{self.name}/boss.png').convert_alpha()
-        self.image = pygame.transform.scale(boss_image, (boss_image.get_width()/2, boss_image.get_height()/2))
+        self.boss_image = pygame.image.load(f'Assets/Sprites/{self.name}/boss.png').convert_alpha()
+        self.laugh_image = pygame.image.load(f'Assets/Sprites/{self.name}/laugh.png').convert_alpha()
+        self.defeat_image = pygame.image.load(f'Assets/Sprites/{self.name}/defeat.png').convert_alpha()
+        self.current_image = self.boss_image
+        self.image = pygame.transform.scale(self.current_image, (self.current_image.get_width()/2, self.current_image.get_height()/2))
         self.rect = self.image.get_rect()
         self.rect.center = (x,y)
+
+    def update_image(self):
+        if self.laugh_meter > 0.5 * self.max_laugh_meter:
+            self.current_image = self.laugh_image
+        elif self.laugh_meter >= self.max_laugh_meter:
+            self.current_image = self.defeat_image
+        else:
+            self.current_image = self.boss_image
 
     def draw(self):
         screen.blit(self.image, self.rect)
@@ -106,7 +117,6 @@ Pringles = Boss(height/2, width/2.5, 'pringles', 200)
 ## Creating a player
 player = Player()
 
-## Loading cards
 
 ## initializing and displaying 5 cards
 x=64
@@ -124,8 +134,11 @@ while True:
     draw_bottom()
 
     ## Draw entities
+    
+    Pringles.update_image()
     Pringles.draw()
     draw_laugh_meter(Pringles)
+    
 
     for card in player.player_cards:
         card.draw()
@@ -138,10 +151,9 @@ while True:
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
 
-            # Check if the mouse click is on one of the cards
             for card in player.player_cards:
                 if card.rect.collidepoint(mouse_pos):
-                    # Play the card and update the laugh meter
+
                     card.play(Pringles)
                     # Additional logic can be added here, such as removing the card from the player's hand
 
