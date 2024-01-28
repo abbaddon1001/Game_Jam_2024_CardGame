@@ -81,6 +81,7 @@ class Card():
     def play(self, boss):
         # Increment the laugh meter of the boss
         boss.laugh_meter += self.laugh_damage
+        boss.laugh_meter = min(boss.laugh_meter, boss.max_laugh_meter)
 
 ##Boss Class
 class Boss():
@@ -100,12 +101,19 @@ class Boss():
         screen.blit(self.image, self.rect)
 
 ## Loading example Boss fight
-Pringles = Boss(height/2, width/2.5, 'pringles', 200 )
+Pringles = Boss(height/2, width/2.5, 'pringles', 100 )
 
 ## Creating a player
 player = Player()
 
 ## Loading cards
+
+## initializing and displaying 5 cards
+x=64
+for i in range(5):
+    card = Card(x, height - bottom_menu + 25, 'king', 'Damage', 20)
+    player.player_cards.append(card)
+    x=x+64
 
 
 while True:
@@ -119,12 +127,8 @@ while True:
     Pringles.draw()
     draw_laugh_meter(Pringles)
 
-    ## initializing and displaying 5 cards
-    x=64
-    for i in range(5):
-        King = Card(x, height - bottom_menu + 25, 'king', 'Damage', 20)
-        King.draw()
-        x=x+64
+    for card in player.player_cards:
+        card.draw()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
