@@ -42,7 +42,7 @@ def draw_laugh_meter(boss):
     filled_width = (boss.laugh_meter / boss.max_laugh_meter) * 200 
 
     # Draw the filled portion of the laugh meter
-    pygame.draw.rect(screen, (255, 0, 0), (x, y, filled_width, 20))
+    pygame.draw.rect(screen, (255, 57, 46), (x, y, filled_width, 20))
 
     # Render and blit the text "Laughter Meter" above the bar
     font = pygame.font.Font(None, 36)
@@ -90,7 +90,7 @@ class Boss():
         self.laugh = False
         self.max_laugh_meter = hp 
         self.laugh_meter = 0
-        self.hp    = hp
+        self.hp = hp
         self.alive = True
         self.boss_image = pygame.image.load(f'Assets/Sprites/{self.name}/boss.png').convert_alpha()
         self.laugh_image = pygame.image.load(f'Assets/Sprites/{self.name}/laugh.png').convert_alpha()
@@ -99,17 +99,28 @@ class Boss():
         self.image = pygame.transform.scale(self.current_image, (self.current_image.get_width()/2, self.current_image.get_height()/2))
         self.rect = self.image.get_rect()
         self.rect.center = (x,y)
+        self.defeated_font = pygame.font.Font(None, 72)
+        self.defeated_text = self.defeated_font.render("DEFEATED", True, (255, 0, 0))
+        self.defeated_text_rect = self.defeated_text.get_rect(center=self.rect.center)
+
 
     def update_image(self):
-        if self.laugh_meter > 0.5 * self.max_laugh_meter:
-            self.current_image = self.laugh_image
-        elif self.laugh_meter >= self.max_laugh_meter:
+        if self.laugh_meter >= self.max_laugh_meter:
             self.current_image = self.defeat_image
+        elif self.laugh_meter > 0.5 * self.max_laugh_meter:
+            self.current_image = self.laugh_image
         else:
             self.current_image = self.boss_image
 
+        # Scale the current image and update the rect
+        self.image = pygame.transform.scale(self.current_image, (self.current_image.get_width() // 2, self.current_image.get_height() // 2))
+        self.rect = self.image.get_rect(center=self.rect.center)
+
     def draw(self):
         screen.blit(self.image, self.rect)
+
+        if self.laugh_meter >= self.max_laugh_meter:
+            screen.blit(self.defeated_text, self.defeated_text_rect)
 
 ## Loading example Boss fight
 Pringles = Boss(height/2, width/2.5, 'pringles', 200)
