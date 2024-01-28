@@ -62,19 +62,35 @@ class Player():
         self.select_card = False
         self.win = False
 
+## Deck class
+class Deck():
+    def __init__(x,y,self, cardList):
+        self.cardList = cardList
+        length = cardList.length
+        deck_image = pygame.image.load('Assets/Cards/Deck.jpg')
+        self.image = pygame.transform.scale(deck_image,(deck_image.get_width() / 3.5, deck_image.get_height() / 3.5))
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+
+
+
 
 ## Card Class
 
 class Card():
-    def __init__(self, x,y, name, mechanic, laugh_damage):
-        self.name = name
+    def __init__(self, x,y, front_card, mechanic, laugh_damage):
+        self.flipped_state = False
         self.mechanic = mechanic
         self.laugh_damage = laugh_damage
-        card_img = pygame.image.load(f'Assets/Cards/{self.name}.jpg').convert_alpha()
-        self.image = pygame.transform.scale(card_img, (card_img.get_width()/3.5, card_img.get_height()/3.5))
+        back_card_img = pygame.image.load(f'Assets/Cards/Card Sleeve.png').convert_alpha()
+        self.front_card = pygame.image.load(f'Assets/Memes/{front_card}.jpg')
+        self.image = pygame.transform.scale(back_card_img, (back_card_img.get_width()/3.5, back_card_img.get_height()/3.5))
         self.rect = self.image.get_rect()
         self.rect.center = (x,y)
 
+    def on_click(self):
+        self.image = pygame.transform.scale(self.front_card, (self.front_card.get_width()/3.5, self.front_card.get_height()/3.5))
+        self.flipped_state = True
     def draw(self):
         screen.blit(self.image,self.rect)
 
@@ -114,14 +130,25 @@ class Boss():
 ## Loading example Boss fight
 Pringles = Boss(height/2, width/2.5, 'pringles', 200)
 
+
+
+## card list
+# cardList = []
+# for i in range(1,11):
+#     x = 64
+#     card = Card(x, height-bottom_menu+25, str(i), 'Damage', 10)
+#     cardList.append(card)
+#     x += 64
+
 ## Creating a player
 player = Player()
 
+## initializing card deck
 
-## initializing and displaying 5 cards
 x=64
-for i in range(5):
-    card = Card(x, height - bottom_menu + 25, 'king', 'Damage', 20)
+
+for i in range(1,6):
+    card = Card(x, height - bottom_menu + 25, str(i), 'Damage', 20)
     player.player_cards.append(card)
     x=x+64
 
@@ -132,6 +159,7 @@ while True:
 
     draw_background()
     draw_bottom()
+
 
     ## Draw entities
     
@@ -152,8 +180,10 @@ while True:
             mouse_pos = pygame.mouse.get_pos()
 
             for card in player.player_cards:
-                if card.rect.collidepoint(mouse_pos):
+                if card.rect.collidepoint(mouse_pos) and card.flipped_state!=True:
+                    card.on_click()
 
+                if card.rect.collidepoint(mouse_pos) and card.flipped_state==True:
                     card.play(Pringles)
                     # Additional logic can be added here, such as removing the card from the player's hand
 
