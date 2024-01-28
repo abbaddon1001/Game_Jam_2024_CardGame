@@ -15,24 +15,26 @@ screen = pygame.display.set_mode((height, width))
 pygame.display.set_caption('Comedy Dungeon')
 
 ## Loading background image
-backgroundImage = pygame.image.load('Assets/Backgrounds/sky_background.jpg').convert_alpha()
+backgroundImage = pygame.image.load('Assets/Backgrounds/background.png').convert_alpha()
+backgroundImage = pygame.transform.scale(backgroundImage, (650, 512))
 
 ## Menu image
-panelImage = pygame.image.load('Assets/Backgrounds/blue_menu.png').convert_alpha()
+panelImage = pygame.image.load('Assets/Backgrounds/bottom_menu.png').convert_alpha()
+panelImage = pygame.transform.scale(panelImage, (520, 300))
 
 # Initialize game state
 game_state = "TITLE"
 
 # Display title screen
 title_font = pygame.font.Font('Assets/Fonts/Ancient Medium 500.ttf', 60)
-title_text = title_font.render("COMEDY DUNGEON", True, (31, 18, 8))
+title_text = title_font.render("COMEDY DUNGEON", True, (217, 177, 145))
 title_text_rect = title_text.get_rect(center=(width/1.59, height/3))
 
 click_font = pygame.font.Font('Assets/Fonts/Ancient Medium 500.ttf', 30)
 click_text = click_font.render("Click to play", True, (217, 177, 145))
 click_text_rect = click_text.get_rect(center=(width/5, height/1.5))
 
-title_screen_background = pygame.image.load('Assets/Backgrounds/sky_background.jpg').convert_alpha()
+title_screen_background = pygame.image.load('Assets/Backgrounds/background.png').convert_alpha()
 title_screen_background = pygame.transform.scale(title_screen_background, (650, 512))
 
 # Display title screen
@@ -56,7 +58,7 @@ def draw_background():
 
 ## Function to draw bottom panel menu
 def draw_bottom():
-    screen.blit(panelImage, (0, height-bottom_menu-55))
+    screen.blit(panelImage, (0, height-bottom_menu-50))
 
 def draw_laugh_meter(boss):
     # Calculate the position to center the rectangle
@@ -73,8 +75,8 @@ def draw_laugh_meter(boss):
     pygame.draw.rect(screen, (255, 57, 46), (x, y, filled_width, 20))
 
     # Render and blit the text "Laughter Meter" above the bar
-    font = pygame.font.Font(None, 36)
-    text = font.render("Laughter Meter", True, (255, 255, 255))
+    font = pygame.font.Font('Assets/Fonts/Ancient Medium 500.ttf', 36)
+    text = font.render("Laughter Meter", True, (217, 177, 145))
     text_rect = text.get_rect(center=(boss.rect.centerx, y - 20))  
     screen.blit(text, text_rect)
 
@@ -161,7 +163,7 @@ player = Player()
 ## initializing and displaying 5 cards
 x=64
 for i in range(5):
-    card = Card(x, height - bottom_menu + 25, 'king', 'Damage', 20)
+    card = Card(x, height - bottom_menu + 25, 'Card Sleeve', 'Damage', 20)
     player.player_cards.append(card)
     x=x+64
 
