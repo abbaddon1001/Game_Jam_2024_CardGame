@@ -88,7 +88,7 @@ class Boss():
     def __init__(self, x,y, name, hp):
         self.name = name
         self.laugh = False
-        self.max_laugh_meter = 100 
+        self.max_laugh_meter = hp 
         self.laugh_meter = 0
         self.hp    = hp
         self.alive = True
@@ -101,7 +101,7 @@ class Boss():
         screen.blit(self.image, self.rect)
 
 ## Loading example Boss fight
-Pringles = Boss(height/2, width/2.5, 'pringles', 100 )
+Pringles = Boss(height/2, width/2.5, 'pringles', 200)
 
 ## Creating a player
 player = Player()
