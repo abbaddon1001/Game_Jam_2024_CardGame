@@ -168,9 +168,33 @@ for i in range(5):
     x=x+64
 
 
+# New game state for "BOSS DEFEATED" screen
+defeated_state_font = pygame.font.Font('Assets/Fonts/Ancient Medium 500.ttf', 60)
+defeated_state_text = defeated_state_font.render("BOSS DEFEATED", True, (217, 177, 145))
+defeated_state_text_rect = defeated_state_text.get_rect(center=(width/1.59, height/3))
+
+next_stage_font = pygame.font.Font('Assets/Fonts/Ancient Medium 500.ttf', 30)
+next_stage_text = next_stage_font.render("Click to play next stage", True, (217, 177, 145))
+next_stage_text_rect = next_stage_text.get_rect(center=(width/1.5, height/1.5))
+
+
 while True:
 
     clock.tick(fps)
+
+    if game_state == "BOSS_DEFEATED":
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                game_state = "PLAY"
+
+        screen.blit(title_screen_background, (0, 0))
+        screen.blit(defeated_state_text, defeated_state_text_rect)
+        screen.blit(next_stage_text, next_stage_text_rect)
+        pygame.display.update()
 
     if game_state == "PLAY":
         draw_background()
@@ -185,6 +209,7 @@ while True:
 
         if current_boss.laugh_meter >= current_boss.max_laugh_meter:
             # Switch to the new boss after defeating the current boss
+            game_state = "BOSS_DEFEATED"
             current_boss_name = 'pepe'
             current_boss = Boss(height/2, width/2.5, current_boss_name, 200)
 
