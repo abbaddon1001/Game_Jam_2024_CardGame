@@ -7,6 +7,8 @@ pygame.init()
 clock = pygame.time.Clock()
 fps   = 30
 
+stage_counter = 0
+
 ## Game window
 bottom_menu = 200
 height = 512
@@ -178,10 +180,27 @@ next_stage_text = next_stage_font.render("Click to play next stage", True, (217,
 next_stage_text_rect = next_stage_text.get_rect(center=(width/1.5, height/1.5))
 
 
+game_over_font = pygame.font.Font('Assets/Fonts/Ancient Medium 500.ttf', 60)
+game_over_text = game_over_font.render("GAME OVER", True, (217, 177, 145))
+game_over_text_rect = game_over_text.get_rect(center=(width/1.59, height/3))
+
+
+
 while True:
 
     clock.tick(fps)
 
+
+    if game_state == "GAME_OVER":
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+        screen.blit(title_screen_background, (0, 0))
+        screen.blit(game_over_text, game_over_text_rect)
+        pygame.display.update()
+        
     if game_state == "BOSS_DEFEATED":
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -197,6 +216,7 @@ while True:
         pygame.display.update()
 
     if game_state == "PLAY":
+
         draw_background()
         draw_bottom()
 
@@ -209,9 +229,15 @@ while True:
 
         if current_boss.laugh_meter >= current_boss.max_laugh_meter:
             # Switch to the new boss after defeating the current boss
-            game_state = "BOSS_DEFEATED"
-            current_boss_name = 'pepe'
-            current_boss = Boss(height/2, width/2.5, current_boss_name, 200)
+            if stage_counter == 1:
+                game_state = "GAME_OVER"
+
+            else: 
+                game_state = "BOSS_DEFEATED"
+                stage_counter+=1
+                print(stage_counter)
+                current_boss_name = 'pepe'
+                current_boss = Boss(height/2, width/2.5, current_boss_name, 200)
 
 
         for card in player.player_cards:
@@ -229,6 +255,6 @@ while True:
                     if card.rect.collidepoint(mouse_pos):
 
                         card.play(current_boss)
-                        # Additional logic can be added here, such as removing the card from the player's hand
 
     pygame.display.update()
+l
