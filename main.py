@@ -20,7 +20,35 @@ backgroundImage = pygame.image.load('Assets/Backgrounds/sky_background.jpg').con
 ## Menu image
 panelImage = pygame.image.load('Assets/Backgrounds/blue_menu.png').convert_alpha()
 
+# Initialize game state
+game_state = "TITLE"
 
+# Display title screen
+title_font = pygame.font.Font('Assets/Fonts/Ancient Medium 500.ttf', 60)
+title_text = title_font.render("COMEDY DUNGEON", True, (31, 18, 8))
+title_text_rect = title_text.get_rect(center=(width/1.59, height/3))
+
+click_font = pygame.font.Font('Assets/Fonts/Ancient Medium 500.ttf', 30)
+click_text = click_font.render("Click to play", True, (217, 177, 145))
+click_text_rect = click_text.get_rect(center=(width/5, height/1.5))
+
+title_screen_background = pygame.image.load('Assets/Backgrounds/sky_background.jpg').convert_alpha()
+title_screen_background = pygame.transform.scale(title_screen_background, (650, 512))
+
+# Display title screen
+while game_state == "TITLE":
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit()
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            game_state = "PLAY"
+
+    screen.blit(title_screen_background, (0, 0))
+    screen.blit(title_text, title_text_rect)
+    screen.blit(click_text, click_text_rect)
+    pygame.display.update()
 
 ## Function for drawing background
 def draw_background():
@@ -28,7 +56,7 @@ def draw_background():
 
 ## Function to draw bottom panel menu
 def draw_bottom():
-    screen.blit(panelImage, (0, height-bottom_menu-50))
+    screen.blit(panelImage, (0, height-bottom_menu-55))
 
 def draw_laugh_meter(boss):
     # Calculate the position to center the rectangle
@@ -122,8 +150,9 @@ class Boss():
         if self.laugh_meter >= self.max_laugh_meter:
             screen.blit(self.defeated_text, self.defeated_text_rect)
 
-## Loading example Boss fight
-Pringles = Boss(height/2, width/2.5, 'pringles', 200)
+## Loading Boss fight
+current_boss_name = 'pringles'
+current_boss = Boss(height/2, width/2.5, current_boss_name, 100)
 
 ## Creating a player
 player = Player()
@@ -141,31 +170,38 @@ while True:
 
     clock.tick(fps)
 
-    draw_background()
-    draw_bottom()
+    if game_state == "PLAY":
+        draw_background()
+        draw_bottom()
 
-    ## Draw entities
-    
-    Pringles.update_image()
-    Pringles.draw()
-    draw_laugh_meter(Pringles)
-    
+        ## Draw entities
+        
+        current_boss.update_image()
+        current_boss.draw()
+        draw_laugh_meter(current_boss)
 
-    for card in player.player_cards:
-        card.draw()
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            exit()
+        if current_boss.laugh_meter >= current_boss.max_laugh_meter:
+            # Switch to the new boss after defeating the current boss
+            current_boss_name = 'pepe'
+            current_boss = Boss(height/2, width/2.5, current_boss_name, 200)
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_pos = pygame.mouse.get_pos()
 
-            for card in player.player_cards:
-                if card.rect.collidepoint(mouse_pos):
+        for card in player.player_cards:
+            card.draw()
 
-                    card.play(Pringles)
-                    # Additional logic can be added here, such as removing the card from the player's hand
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+
+                for card in player.player_cards:
+                    if card.rect.collidepoint(mouse_pos):
+
+                        card.play(current_boss)
+                        # Additional logic can be added here, such as removing the card from the player's hand
 
     pygame.display.update()
